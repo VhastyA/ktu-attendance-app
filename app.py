@@ -192,7 +192,7 @@ def clear_attendance():
     conn.close()
     flash("Attendance log cleared successfully!", "success")
     return redirect(url_for('view_attendance'))
-
+    
+init_db()
 if __name__ == '__main__':
-    init_db()
-    app.run(debug=True, port=8080)
+    app.run(debug=True)
