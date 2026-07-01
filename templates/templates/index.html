@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Sign-In</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { 
+            background-color: #0f172a; 
+            color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        }
+        .signin-card { 
+            background: #1e293b; 
+            border-radius: 12px; 
+            border: 1px solid #334155; 
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+        .btn-submit { 
+            background-color: #2563eb;
+            color: #ffffff;
+            border: none; 
+            font-weight: 600; 
+            padding: 12px; 
+            border-radius: 6px; 
+            transition: background 0.2s ease; 
+        }
+        .btn-submit:hover { 
+            background-color: #1d4ed8;
+        }
+        .form-control-custom { 
+            background-color: #0f172a !important;
+            border-radius: 6px; 
+            border: 1px solid #475569; 
+            padding: 12px; 
+            color: #ffffff !important;
+        }
+        .form-control-custom:focus { 
+            border-color: #3b82f6; 
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+            outline: none;
+        }
+        .form-control-custom::placeholder {
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5 pt-3">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold mb-1 text-white">Lecture Attendance</h3>
+                    {% if session['is_active'] %}
+                        <span class="text-emerald-400 small fw-medium" style="color: #34d399;">● Session Active</span>
+                    {% else %}
+                        <span class="text-slate-400 small fw-medium" style="color: #94a3b8;">● Session Closed</span>
+                    {% endif %}
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                  {% if messages %}
+                    {% for category, message in messages %}
+                      <div class="alert {% if 'Error' in message or category == 'error' %}alert-danger bg-danger bg-opacity-10 text-danger border-danger border-opacity-20{% else %}alert-success bg-success bg-opacity-10 text-success border-success border-opacity-20{% endif %} border small text-center mb-4" role="alert">
+                        {{ message }}
+                      </div>
+                    {% endfor %}
+                  {% endif %}
+                {% endwith %}
+
+                <div class="signin-card p-4">
+                    <form action="/submit" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label text-slate-400 small fw-semibold text-uppercase" style="color: #94a3b8;">Index Number</label>
+                            <input type="text" id="index_input" name="index_number" class="form-control form-control-custom" placeholder="e.g. 04230100" list="index_list" autocomplete="off" {% if not session['is_active'] %}disabled{% endif %} required>
+                            
+                            <datalist id="index_list">
+                                {% for student in roster %}
+                                    <option value="{{ student[1] }}">{{ student[0] }}</option>
+                                {% endfor %}
+                            </datalist>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-slate-400 small fw-semibold text-uppercase" style="color: #94a3b8;">Full Name</label>
+                            <input type="text" id="name_input" name="name" class="form-control form-control-custom" placeholder="Auto-fills from roster" list="name_list" autocomplete="off" {% if not session['is_active'] %}disabled{% endif %} required>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-slate-400 small fw-semibold text-uppercase" style="color: #94a3b8;">4-Digit Session Code</label>
+                            <input type="text" name="session_pin" class="form-control form-control-custom text-center fw-bold fs-3" style="letter-spacing: 6px;" maxlength="4" placeholder="0000" {% if not session['is_active'] %}disabled{% endif %} required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-submit w-100" {% if not session['is_active'] %}disabled{% endif %}>Sign Attendance</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const roster = {
+            {% for student in roster %}
+                "{{ student[1] }}": "{{ student[0] }}",
+            {% endfor %}
+        };
+        
+        document.getElementById('index_input').addEventListener('input', function(e) {
+            const val = e.target.value;
+            if(roster[val]) {
+                document.getElementById('name_input').value = roster[val];
+            }
+        });
+    </script>
+</body>
+</html>
