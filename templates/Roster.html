@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Roster Setup</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+        .main-card { background: #1e293b; border-radius: 8px; border: 1px solid #334155; }
+        .btn-blue { background-color: #2563eb; color: white; font-weight: 500; border: none; }
+        .btn-blue:hover { background-color: #1d4ed8; }
+        .form-control-custom { background-color: #0f172a !important; border: 1px solid #475569; color: #ffffff !important; }
+        .form-control-custom:focus { border-color: #3b82f6; box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4); }
+        
+        /* Fixed Table Styling for Dark Mode */
+        .table-custom { background-color: transparent !important; color: #f8fafc !important; }
+        .table-custom th { color: #94a3b8 !important; border-bottom: 2px solid #334155 !important; background-color: transparent !important; }
+        .table-custom td { border-bottom: 1px solid #334155 !important; color: #ffffff !important; background-color: transparent !important; padding: 12px 8px; }
+        .table-custom tr { background-color: transparent !important; }
+        
+        code.index-code { color: #38bdf8; font-weight: 600; background: none; padding: 0; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: #334155;">
+            <div>
+                <h3 class="fw-bold text-white mb-0">Class Roster Setup</h3>
+                <span class="text-slate-400 small" style="color: #94a3b8;">Pre-populate class registry lists</span>
+            </div>
+            <div>
+                <a href="/lecturer/dashboard" class="btn btn-outline-secondary btn-sm fw-medium text-white" style="border-color: #475569;">← Back to Dashboard</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {% if category == 'error' %}alert-danger bg-danger bg-opacity-10 text-danger border-danger border-opacity-10{% else %}alert-success bg-success bg-opacity-10 text-success border-success border-opacity-10{% endif %} border small py-2 text-center" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="main-card p-4 shadow-sm">
+                    <h5 class="fw-bold text-white mb-3">Add Student</h5>
+                    <form action="/lecturer/roster" method="POST">
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-uppercase" style="color: #94a3b8;">Full Name</label>
+                            <input type="text" name="student_name" class="form-control form-control-custom py-2" placeholder="e.g. Ama Serwaa" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-uppercase" style="color: #94a3b8;">Index Number</label>
+                            <input type="text" name="index_number" class="form-control form-control-custom py-2" placeholder="e.g. 04230102" required>
+                        </div>
+                        <button type="submit" class="btn btn-blue w-100 py-2">Save Student</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="main-card p-4 shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold text-white mb-0">Class Registry ({{ roster|length }})</h5>
+                        
+                        <form action="/lecturer/clear_roster" method="POST" onsubmit="return confirmRosterClear();">
+                            <button type="submit" class="btn btn-link text-danger text-decoration-none small p-0 fw-semibold">🗑️ Clear Entire Roster</button>
+                        </form>
+                    </div>
+                    
+                    <table class="table table-custom align-middle mb-0">
+                        <thead class="small text-uppercase">
+                            <tr>
+                                <th style="width: 10%;">#</th>
+                                <th>Student Name</th>
+                                <th>Index Number</th>
+                            </tr>
+                        </thead>
+                        <tbody class="small">
+                            {% for student in roster %}
+                            <tr>
+                                <td style="color: #64748b;">{{ loop.index }}</td>
+                                <td class="fw-semibold">{{ student[0] }}</td>
+                                <td><code class="index-code">{{ student[1] }}</code></td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center py-4" style="color: #64748b;">Roster is empty. Register students to enable form predictions.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmRosterClear() {
+            return confirm("CRITICAL WARNING:\n\nYou are about to delete ALL registered students from the official class list database. This cannot be undone and will break autocomplete settings until re-added.\n\nDo you want to proceed with the database wipe?");
+        }
+    </script>
+</body>
+</html>
