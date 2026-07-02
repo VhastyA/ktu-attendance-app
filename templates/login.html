@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecturer Verification</title>
+    <style>
+        body {
+            background-color: #0b132b;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .card {
+            background-color: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 35px;
+            width: 100%;
+            max-width: 360px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+        p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .input-control {
+            width: 100%;
+            background-color: #0b132b;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 14px;
+            color: #ffffff;
+            font-size: 15px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        .input-control::placeholder {
+            color: #334155;
+        }
+        .btn-submit {
+            width: 100%;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: background 0.2s;
+        }
+        .btn-submit:hover {
+            background-color: #1d4ed8;
+        }
+        .error {
+            color: #ef4444;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2>Lecturer Verification</h2>
+        <p>Enter security credentials to manage the student roster registry.</p>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        <form method="POST" action="/lecturer/login">
+            <input type="hidden" name="next" value="{{ next }}">
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Enter Access Password" required class="input-control">
+            </div>
+            <button type="submit" class="btn-submit">Verify Identity</button>
+        </form>
+    </div>
+</body>
+</html>
