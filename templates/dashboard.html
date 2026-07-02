@@ -5,26 +5,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Attendance Roster</title>
     <style>
-        body { background-color: #0b132b; color: #ffffff; font-family: -apple-system, sans-serif; margin: 0; padding: 40px 30px; }
-        .container { max-width: 1050px; margin: 0 auto; }
-        .header-section { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #1c2541; padding-bottom: 20px; margin-bottom: 35px; }
-        h1 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
-        .subtitle { color: #64748b; margin: 6px 0 0 0; font-size: 14px; }
-        .btn-nav { background: #2563eb; color: #ffffff; border: none; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; }
-        .btn-nav:hover { background: #1d4ed8; }
+        body {
+            background-color: #0b132b;
+            color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 40px 30px;
+        }
+        .container {
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #1c2541;
+            padding-bottom: 20px;
+            margin-bottom: 35px;
+        }
+        h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        .subtitle {
+            color: #64748b;
+            margin: 6px 0 0 0;
+            font-size: 14px;
+        }
+        .btn-nav {
+            background: #2563eb;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+        .btn-nav:hover {
+            background: #1d4ed8;
+        }
         .card { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 30px; margin-bottom: 25px; }
         .otp-panel { display: flex; align-items: center; justify-content: space-between; background: #131f42; border: 1px solid #2563eb; }
         .otp-code { font-size: 32px; font-weight: 800; color: #38bdf8; letter-spacing: 2px; background: #0b132b; padding: 4px 16px; border-radius: 6px; border: 1px solid #1e293b; }
         .registry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        
+        .action-buttons { display: flex; gap: 12px; align-items: center; }
         .btn-copy { background-color: #16a34a; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .btn-copy:hover { background-color: #15803d; }
+        .btn-download { background-color: #0284c7; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .btn-download:hover { background-color: #0369a1; }
+        
         .btn-submit { background-color: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; }
         .btn-danger { background-color: #dc2626; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; }
         .btn-clear { background: transparent; color: #ef4444; border: none; cursor: pointer; font-weight: 600; font-size: 14px; }
+        .btn-clear:hover { text-decoration: underline; }
+        
         table { width: 100%; border-collapse: collapse; }
         th, td { text-align: left; padding: 14px 0; border-bottom: 1px solid #1e293b; font-size: 15px; }
-        th { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
-        .empty-message { color: #64748b; padding: 40px 0; text-align: center; }
-        .feedback { color: #16a34a; margin-left: 12px; font-weight: 600; font-size: 14px; display: none; }
+        th { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
+        .empty-message { color: #64748b; padding: 40px 0; text-align: center; font-size: 14px; }
+        .feedback { color: #4ade80; margin-left: 4px; font-weight: 600; font-size: 14px; display: none; }
     </style>
 </head>
 <body>
@@ -44,11 +89,8 @@
             <div>
                 <h3 style="margin: 0 0 5px 0; font-size: 18px;">Anti-Cheating Token Security</h3>
                 <p style="margin: 0; color: #8fa0c4; font-size: 13px;">
-                    {% if current_otp %}
-                    Share this active code with students in the hall. Submissions are open.
-                    {% else %}
-                    Attendance submissions are closed. Generate a new token to open.
-                    {% endif %}
+                    {% if current_otp %} Share this active code with students in the hall. Submissions are open.
+                    {% else %} Attendance submissions are closed. Generate a new token to open. {% endif %}
                 </p>
             </div>
             <div>
@@ -69,16 +111,17 @@
 
         <div class="card">
             <div class="registry-header">
-                <div>
-                    <button onclick="copyToClipboard()" class="btn-copy">📋 Copy Names for Class Registry</button>
+                <div class="action-buttons">
+                    <button onclick="copyToClipboard()" class="btn-copy">📋 Copy Names</button>
+                    <button onclick="downloadCSV()" class="btn-download">📥 Download Excel Sheet</button>
                     <span id="copyFeedback" class="feedback">Copied!</span>
                 </div>
-                <form method="POST" action="/lecturer/clear" onsubmit="return confirm('Wipe attendance session sheet?');">
+                <form method="POST" action="/lecturer/clear" onsubmit="return confirm('Wipe attendance session sheet? Make sure you downloaded the CSV file first!');">
                     <button type="submit" class="btn-clear">🗑️ Clear Live Roster</button>
                 </form>
             </div>
 
-            <table>
+            <table id="attendanceTable">
                 <thead>
                     <tr>
                         <th style="width: 10%;">#</th>
@@ -104,6 +147,7 @@
     </div>
 
     <script>
+        // Copy to clipboard fallback tool
         function copyToClipboard() {
             let text = "";
             document.querySelectorAll("table tbody tr").forEach(row => {
@@ -114,9 +158,50 @@
             });
             if(!text) { alert("No data to copy."); return; }
             navigator.clipboard.writeText(text).then(() => {
+                document.getElementById("copyFeedback").innerText = "Copied!";
                 document.getElementById("copyFeedback").style.display = "inline";
                 setTimeout(() => { document.getElementById("copyFeedback").style.display = "none"; }, 2000);
             });
+        }
+
+        // 📥 EXCEL CSV DOWNLOAD PROCESSING FUNCTION
+        function downloadCSV() {
+            let csvRows = [];
+            // Add excel column row headers
+            csvRows.push("Number,Student Name,Index Number");
+            
+            const rows = document.querySelectorAll("table tbody tr");
+            let containsData = false;
+
+            rows.forEach(row => {
+                const cols = row.querySelectorAll("td");
+                if(cols.length >= 3 && !row.querySelector('.empty-message')) {
+                    containsData = true;
+                    let number = cols[0].innerText.trim();
+                    let name = cols[1].innerText.trim().replace(/,/g, ""); // strip inner row commas
+                    let indexNum = cols[2].innerText.trim();
+                    csvRows.push(`${number},${name},${indexNum}`);
+                }
+            });
+
+            if(!containsData) {
+                alert("Roster list is empty! No student logs to extract.");
+                return;
+            }
+
+            // Create down-stream download binary blob anchor element object
+            let csvContent = "data:text/csv;charset=utf-8," + csvRows.join("\n");
+            let encodedUri = encodeURI(csvContent);
+            let link = document.createElement("a");
+            
+            // Format dynamic file export naming style label structure
+            let today = new Date().toISOString().split('T')[0];
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `KTU_Attendance_Sheet_${today}.csv`);
+            document.body.appendChild(link);
+            
+            link.click(); // Programmatically execute browser layout click process target
+            document.body.removeChild(link);
         }
     </script>
 </body>
