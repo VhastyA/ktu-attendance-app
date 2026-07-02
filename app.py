@@ -41,6 +41,7 @@ init_db()
 def index():
     return render_template('index.html')
 
+# Student form submission
 @app.route('/submit', methods=['POST'])
 def submit():
     name = request.form.get('name')
@@ -62,21 +63,45 @@ def submit():
     conn.close()
     return "Attendance recorded successfully!"
 
-# 🔑 Shared Lecturer Login Handler
-@app.route('/lecturer/login', methods=['POST'])
-def lecturer_login():
-    entered_password = request.form.get('password')
-    next_page = request.form.get('next', 'dashboard')
-    if entered_password == "KTU2026":
-        session['logged_in'] = True
-        return redirect(url_for(next_page))
-    return render_template('login.html', error="Incorrect password!", next=next_page)
+# Manual add to master roster registry
+@app.route('/submit-master', methods=['POST'])
+def submit_master():
+    if not session.get('logged_in'):
+        return "Unauthorized", 403
+    name = request.form.get('name')
+    index_number = request.form.get('index_number')
+    
+    if not name or not index_number:
+        return "Missing fields", 400
+        
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    try:
+        cursor.execute('INSERT INTO master_roster (name, index_number) VALUES (?, ?)', (name, index_number))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        pass
+    finally:
+        conn.close()
+    return redirect(url_for('roster'))
 
-# 📊 1. LIVE ATTENDANCE ROSTER
+# 🔑 Shared Lecturer Login
+@app.route('/lecturer/login', methods=['GET', 'POST'])
+def lecturer_login():
+    if request.method == 'POST':
+        entered_password = request.form.get('password')
+        next_page = request.form.get('next', 'dashboard')
+        if entered_password == "KTU2026":
+            session['logged_in'] = True
+            return redirect(url_for(next_page))
+        return render_template('login.html', error="Incorrect password!", next=next_page)
+    return render_template('login.html', next=request.args.get('next', 'dashboard'))
+
+# 📊 1. LIVE DAILY ATTENDANCE DASHBOARD
 @app.route('/lecturer/dashboard')
 def dashboard():
     if not session.get('logged_in'):
-        return render_template('login.html', next='dashboard')
+        return redirect(url_for('lecturer_login', next='dashboard'))
         
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -85,24 +110,14 @@ def dashboard():
     conn.close()
     return render_template('dashboard.html', students=students)
 
-# 📂 2. MASTER CLASS REGISTRY SETUP (Your Drag & Drop Page)
-@app.route('/lecturer/roster', methods=['GET', 'POST'])
+# 📂 2. MASTER CLASS REGISTRY SETUP (Drag & Drop UI Page)
+@app.route('/lecturer/roster')
 def roster():
     if not session.get('logged_in'):
-        return render_template('login.html', next='roster')
+        return redirect(url_for('lecturer_login', next='roster'))
         
     conn = get_db_connection()
     cursor = conn.cursor()
-    
-    if request.method == 'POST':
-        name = request.form.get('name')
-        index_number = request.form.get('index_number')
-        try:
-            cursor.execute('INSERT INTO master_roster (name, index_number) VALUES (?, ?)', (name, index_number))
-            conn.commit()
-        except sqlite3.IntegrityError:
-            pass # Ignore duplicates in setup
-            
     cursor.execute('SELECT * FROM master_roster ORDER BY name ASC')
     students = cursor.fetchall()
     conn.close()
