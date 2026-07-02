@@ -7,6 +7,7 @@ app = Flask(__name__)
 # Secret key required to use sessions (login states) securely
 app.secret_key = 'ktu_attendance_secret_key_2026'
 
+# Absolute path setup to make sure SQLite works perfectly on Render
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, 'attendance.db')
 
@@ -28,6 +29,7 @@ def init_db():
     conn.commit()
     conn.close()
 
+# Initialize the database table structure at startup
 init_db()
 
 # 1. Student Sign-In Page (Homepage)
@@ -55,13 +57,14 @@ def submit():
         conn.close()
         return "You have already signed in for this class!", 400
         
+    # If it's a new entry, save it securely
     cursor.execute('INSERT INTO attendance (name, index_number) VALUES (?, ?)', (name, index_number))
     conn.commit()
     conn.close()
     
     return "Attendance submitted successfully! Thank you."
 
-# 3. Lecturer Dashboard & Login Logic
+# 3. Lecturer Dashboard & Login Logic (Using your view.html template)
 @app.route('/lecturer/dashboard', methods=['GET', 'POST'])
 def dashboard():
     # If the lecturer is submitting the password form
@@ -71,12 +74,12 @@ def dashboard():
             session['logged_in'] = True
             return redirect(url_for('dashboard'))
         else:
-            return render_template('dashboard.html', error="Incorrect password! Please try again.")
+            return render_template('view.html', error="Incorrect password! Please try again.")
 
     # Check if the lecturer is already logged in
     if not session.get('logged_in'):
-        # If not logged in, render the dashboard template but tell it to show the login screen
-        return render_template('dashboard.html', show_login=True)
+        # If not logged in, tell view.html to show the login box
+        return render_template('view.html', show_login=True)
 
     # If logged in, fetch the roster data
     init_db()
@@ -86,9 +89,9 @@ def dashboard():
     students = cursor.fetchall()
     conn.close()
     
-    return render_template('dashboard.html', students=students, show_login=False)
+    return render_template('view.html', students=students, show_login=False)
 
-# 4. Lecturer Logout
+# 4. Lecturer Logout Route
 @app.route('/lecturer/logout')
 def logout():
     session.pop('logged_in', None)
@@ -98,7 +101,7 @@ def logout():
 @app.route('/lecturer/clear', methods=['POST'])
 def clear_attendance():
     if not session.get('logged_in'):
-        return "Unauthorized", 403
+        return "Unauthorized access", 403
     conn = get_db_connection()
     cursor = conn.cursor()
     cursor.execute('DELETE FROM attendance')
