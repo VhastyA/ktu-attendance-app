@@ -3,68 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lecturer Dashboard</title>
-    </head>
+    <title>KTU Lecturer Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 800px; margin: 40px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #1e3a8a; margin: 0; font-size: 28px; }
+        .login-box { max-width: 400px; margin: 100px auto; text-align: center; background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .input-field { width: 100%; padding: 12px; margin: 15px 0; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px; box-sizing: border-box; text-align: center; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: bold; padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-size: 15px; transition: background 0.2s; text-decoration: none; }
+        .btn-primary { background-color: #2563eb; color: white; width: 100%; }
+        .btn-primary:hover { background-color: #1d4ed8; }
+        .btn-success { background-color: #16a34a; color: white; }
+        .btn-success:hover { background-color: #15803d; }
+        .btn-danger { background-color: #dc2626; color: white; }
+        .btn-danger:hover { background-color: #b91c1c; }
+        .nav-links { display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px; }
+        .nav-links a { color: #2563eb; text-decoration: none; font-weight: 600; }
+        .nav-links a:hover { text-decoration: underline; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; border-radius: 8px; overflow: hidden; }
+        th, td { padding: 14px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { background-color: #f8fafc; color: #475569; font-weight: 600; }
+        tr:hover { background-color: #f8fafc; }
+        .alert { background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-weight: 500; text-align: center; }
+        .feedback { display: none; margin-left: 10px; color: #16a34a; font-weight: bold; background: #dcfce7; padding: 6px 12px; border-radius: 4px; font-size: 14px; }
+    </style>
+</head>
 <body>
 
     {% if show_login %}
-    <div style="max-width: 400px; margin: 100px auto; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; font-family: sans-serif;">
-        <h2>Lecturer Portal Login</h2>
-        <p style="color: #666;">Enter your security key to view the attendance roster.</p>
+    <div class="login-box">
+        <h1>Lecturer Portal Login</h1>
+        <p style="color: #64748b; font-size: 14px;">Enter the security key to view the attendance roster.</p>
         
         {% if error %}
-            <p style="color: red; font-weight: bold;">{{ error }}</p>
+            <div class="alert">{{ error }}</div>
         {% endif %}
 
         <form method="POST" action="/lecturer/dashboard">
-            <input type="password" name="password" placeholder="Enter Password" required 
-                   style="width: 85%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
-            <br>
-            <button type="submit" style="width: 90%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
-                Unlock Dashboard
-            </button>
+            <input type="password" name="password" placeholder="Enter Password" required class="input-field">
+            <button type="submit" class="btn btn-primary">Unlock Dashboard</button>
         </form>
     </div>
 
     {% else %}
-    <div>
+    <div class="container">
         
-        <div style="margin-bottom: 15px;">
-            <a href="/" style="text-decoration: none; color: #007bff; font-weight: bold; font-size: 14px;">
-                ⬅️ Go to Student Sign-In Form
-            </a>
+        <div class="nav-links">
+            <a href="/">⬅️ Go to Student Attendance Page</a>
+            <a href="/lecturer/logout" style="color: #dc2626;">Logout Session 🚪</a>
         </div>
 
-        <div style="margin: 20px 0;">
-            <button id="copyBtn" onclick="copyRosterToClipboard()" style="padding: 10px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <div>
+                <h1>KTU Attendance Roster</h1>
+                <p style="color: #64748b; margin: 5px 0 0 0;">Live tracking sheet for current lecture session</p>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <button id="copyBtn" onclick="copyRosterToClipboard()" class="btn btn-success">
                 📋 Copy Names for Class Registry
             </button>
-            <span id="copyFeedback" style="margin-left: 10px; color: #28a745; font-weight: bold; display: none;">Copied!</span>
+            <span id="copyFeedback" class="feedback">Copied to clipboard!</span>
         </div>
 
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Index Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.name }}</td>
+                    <td><strong>{{ student.index_number }}</strong></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="2" style="padding: 30px; text-align: center; color: #94a3b8;">No students signed in yet for this session.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <form method="POST" action="/lecturer/clear" onsubmit="return confirm('Are you sure you want to completely clear this roster for the next class?');" style="margin-top: 40px; text-align: right;">
+            <button type="submit" class="btn btn-danger">
+                ⚠️ Clear Current Session Roster
+            </button>
+        </form>
+
+    </div>
 
     <script>
     function copyRosterToClipboard() {
-        const rows = document.querySelectorAll("table tr");
+        const rows = document.querySelectorAll("table tbody tr");
         let textToCopy = "";
-        rows.forEach((row, index) => {
-            if (index === 0) return; // Skip header
+
+        rows.forEach((row) => {
             const columns = row.querySelectorAll("td");
             if (columns.length >= 2) {
                 const name = columns[0].innerText.trim();
                 const indexNum = columns[1].innerText.trim();
-                textToCopy += name + "\t" + indexNum + "\n";
+                
+                if (name !== "No students signed in yet for this session.") {
+                    textToCopy += name + "\t" + indexNum + "\n";
+                }
             }
         });
+
+        if (textToCopy === "") {
+            alert("Roster is empty. Nothing to copy!");
+            return;
+        }
+
         navigator.clipboard.writeText(textToCopy).then(() => {
             const feedback = document.getElementById("copyFeedback");
-            feedback.style.display = "inline";
+            feedback.style.display = "inline-block";
             setTimeout(() => { feedback.style.display = "none"; }, 3000);
         });
     }
     </script>
-
     {% endif %}
 
 </body>
