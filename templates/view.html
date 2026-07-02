@@ -265,39 +265,103 @@
     </div>
 
     <script>
-        const dropZone = document.getElementById('fileDropZone');
-        const fileInput = document.getElementById('fileInput');
+    const dropZone = document.getElementById('fileDropZone');
+    const fileInput = document.getElementById('fileInput');
 
-        dropZone.addEventListener('click', () => fileInput.click());
+    // Click to choose file fallback
+    dropZone.addEventListener('click', () => fileInput.click());
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.classList.add('dragover');
-        });
+    // Highlight dropzone on dragover
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('dragover');
+    });
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.classList.remove('dragover');
-        });
+    dropZone.addEventListener('dragleave', () => {
+        dropZone.classList.remove('dragover');
+    });
 
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                handleUploadedFile(files[0]);
-            }
-        });
-
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleUploadedFile(e.target.files[0]);
-            }
-        });
-
-        function handleUploadedFile(file) {
-            alert("File '" + file.name + "' accepted. Ready for batch upload processing.");
+    // Handle dropped file
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            parseAndSubmitRoster(files[0]);
         }
-    </script>
+    });
+
+    // Handle file chosen via file browser
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            parseAndSubmitRoster(e.target.files[0]);
+        }
+    });
+
+    // 📄 Parse File Content and Send Rows to Database
+    function parseAndSubmitRoster(file) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const text = e.target.result;
+            // Split file by line breaks to read row by row
+            const lines = text.split(/\r?\n/);
+            let totalAdded = 0;
+            let promises = [];
+
+            lines.forEach((line) => {
+                if (!line.trim()) return; // Skip empty lines
+
+                let name = "";
+                let indexNum = "";
+
+                // Check if file uses Comma (CSV) or Tab (Excel copy) separating values
+                if (line.includes(',')) {
+                    const parts = line.split(',');
+                    name = parts[0].trim();
+                    indexNum = parts[1] ? parts[1].trim() : "";
+                } else if (line.includes('\t')) {
+                    const parts = line.split('\t');
+                    name = parts[0].trim();
+                    indexNum = parts[1] ? parts[1].trim() : "";
+                }
+
+                // If a valid name and index number row exists, send it to Flask
+                if (name && indexNum && name !== "Student Name") {
+                    totalAdded++;
+                    
+                    // Create an asynchronous form data payload
+                    let formData = new FormData();
+                    formData.append('name', name);
+                    formData.append('index_number', indexNum);
+
+                    // Send the data matching your existing '/submit' route rules
+                    let requestPromise = fetch('/submit', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    promises.push(requestPromise);
+                }
+            });
+
+            if (totalAdded === 0) {
+                alert("Could not extract data. Ensure your file has 'Name,IndexNumber' columns.");
+                return;
+            }
+
+            // Wait until all rows are finished uploading, then refresh the dashboard UI view
+            Promise.all(promises).then(() => {
+                alert(`Successfully processed and uploaded ${totalAdded} students into the registry database!`);
+                window.location.reload(); // Reloads page to display the new student rows automatically
+            }).catch(err => {
+                alert("Error synchronizing file payload with the roster server backend.");
+                console.error(err);
+            });
+        };
+
+        reader.readAsText(file);
+    }
+</script>
     {% endif %}
 
 </body>
