@@ -3,65 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lecturer Dashboard</title>
+    <title>Class Roster Setup</title>
+    <style>
+        body { background-color: #0b132b; color: #ffffff; font-family: -apple-system, sans-serif; margin: 0; padding: 40px 30px; }
+        .container { max-width: 1050px; margin: 0 auto; }
+        .header-section { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #1c2541; padding-bottom: 20px; margin-bottom: 35px; }
+        h1 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
+        .subtitle { color: #64748b; margin: 6px 0 0 0; font-size: 14px; }
+        .btn-back { background: transparent; color: #ffffff; border: 1px solid #1c2541; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500; }
+        .btn-back:hover { background: #1c2541; }
+        .main-layout { display: grid; grid-template-columns: 1fr 1.7fr; gap: 30px; }
+        .card { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 30px; }
+        .card h2 { margin-top: 0; margin-bottom: 25px; font-size: 22px; font-weight: 600; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; text-transform: uppercase; font-size: 11px; color: #64748b; margin-bottom: 10px; font-weight: 700; }
+        .input-control { width: 100%; background-color: #0b132b; border: 1px solid #1e293b; border-radius: 6px; padding: 14px; color: #ffffff; font-size: 15px; box-sizing: border-box; }
+        .btn-submit { width: 100%; background-color: #2563eb; color: white; border: none; padding: 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 15px; }
+        .btn-submit:hover { background-color: #1d4ed8; }
+        .drop-zone { border: 2px dashed #1e293b; border-radius: 6px; padding: 30px 20px; text-align: center; background-color: #0b132b; cursor: pointer; margin-top: 25px; }
+        .drop-zone:hover, .drop-zone.dragover { border-color: #2563eb; background-color: #0f172a; }
+        .drop-zone p { margin: 0; font-size: 14px; color: #64748b; }
+        .registry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .btn-clear { background: transparent; color: #ef4444; border: none; cursor: pointer; font-weight: 600; font-size: 14px; padding: 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 14px 0; border-bottom: 1px solid #1e293b; font-size: 15px; }
+        th { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+        .empty-message { color: #64748b; padding: 40px 0; text-align: center; }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f7f6;">
-
-    {% if show_login %}
-    <div style="max-width: 400px; margin: 100px auto; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;">
-        <h2>Lecturer Portal Login</h2>
-        <p style="color: #666;">Enter your security key to view the attendance roster.</p>
-        
-        {% if error %}
-            <p style="color: red; font-weight: bold;">{{ error }}</p>
-        {% endif %}
-
-        <form method="POST" action="/lecturer/dashboard">
-            <input type="password" name="password" placeholder="Enter Password" required 
-                   style="width: 85%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
-            <br>
-            <button type="submit" style="width: 90%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px;">
-                Unlock Dashboard
-            </button>
-        </form>
-    </div>
-
-    {% else %}
-    <div style="max-width: 900px; margin: 0 auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>KTU Attendance Roster</h1>
-            <a href="/lecturer/logout" style="color: red; text-decoration: none; font-weight: bold;">Logout 🚪</a>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <div>
+                <h1>Class Roster Setup</h1>
+                <p class="subtitle">Pre-populate class registry lists</p>
+            </div>
+            <a href="/lecturer/dashboard" class="btn-back">← Back to Dashboard</a>
         </div>
 
-        <div style="margin: 20px 0;">
-            <button id="copyBtn" onclick="copyRosterToClipboard()" style="padding: 12px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
-                📋 Copy Names for Class Registry
-            </button>
-            <span id="copyFeedback" style="margin-left: 10px; color: #28a745; font-weight: bold; display: none;">Copied to clipboard!</span>
+        <div class="main-layout">
+            <div class="card">
+                <h2>Add Student</h2>
+                <form method="POST" action="/submit-master">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" name="name" placeholder="e.g. Ama Serwaa" required class="input-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Index Number</label>
+                        <input type="text" name="index_number" placeholder="e.g. 04230102" required class="input-control">
+                    </div>
+                    <button type="submit" class="btn-submit">Save Student</button>
+                </form>
+
+                <div class="drop-zone" id="fileDropZone">
+                    <p>📂 <strong>Drag & Drop Roster File Here</strong></p>
+                    <p style="font-size: 11px; margin-top: 8px; color: #334155;">Upload CSV or TXT list</p>
+                </div>
+                <input type="file" id="fileInput" accept=".csv, .txt" style="display: none;">
+            </div>
+
+            <div class="card">
+                <div class="registry-header">
+                    <h2>Class Registry ({{ students|length if students else 0 }})</h2>
+                    <form method="POST" action="/lecturer/clear-roster" onsubmit="return confirm('Wipe master list?');">
+                        <button type="submit" class="btn-clear">🗑️ Clear Entire Roster</button>
+                    </form>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr><th style="width: 10%;">#</th><th style="width: 55%;">Student Name</th><th style="width: 35%;">Index Number</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr><td style="color: #334155;">{{ loop.index }}</td><td>{{ student.name }}</td><td style="color: #64748b;">{{ student.index_number }}</td></tr>
+                        {% else %}
+                        <tr><td colspan="3" class="empty-message">Roster is empty. Register students or drop a file to populate.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-    function copyRosterToClipboard() {
-        const rows = document.querySelectorAll("table tr");
-        let textToCopy = "";
-        rows.forEach((row, index) => {
-            if (index === 0) return; 
-            const columns = row.querySelectorAll("td");
-            if (columns.length >= 2) {
-                const name = columns[0].innerText.trim();
-                const indexNum = columns[1].innerText.trim();
-                textToCopy += name + "\t" + indexNum + "\n";
-            }
-        });
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            const feedback = document.getElementById("copyFeedback");
-            feedback.style.display = "inline";
-            setTimeout(() => { feedback.style.display = "none"; }, 3000);
-        });
-    }
-    </script>
-    {% endif %}
+        const dropZone = document.getElementById('fileDropZone');
+        const fileInput = document.getElementById('fileInput');
 
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) parseAndSubmitRoster(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) parseAndSubmitRoster(e.target.files[0]);
+        });
+
+        function parseAndSubmitRoster(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split(/\r?\n/);
+                let promises = [];
+                lines.forEach((line) => {
+                    if (!line.trim()) return;
+                    let parts = line.includes(',') ? line.split(',') : line.split('\t');
+                    let name = parts[0]?.trim();
+                    let indexNum = parts[1]?.trim();
+                    if (name && indexNum && name !== "Student Name") {
+                        let formData = new FormData();
+                        formData.append('name', name);
+                        formData.append('index_number', indexNum);
+                        promises.push(fetch('/submit-master', { method: 'POST', body: formData }));
+                    }
+                });
+                Promise.all(promises).then(() => { window.location.reload(); });
+            };
+            reader.readAsText(file);
+        }
+    </script>
 </body>
 </html>
