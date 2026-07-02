@@ -5,116 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Live Attendance Roster</title>
     <style>
-        body {
-            background-color: #0b132b;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 40px 30px;
-        }
-        .container {
-            max-width: 1050px;
-            margin: 0 auto;
-        }
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 1px solid #1c2541;
-            padding-bottom: 20px;
-            margin-bottom: 35px;
-        }
-        h1 {
-            margin: 0;
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .subtitle {
-            color: #64748b;
-            margin: 6px 0 0 0;
-            font-size: 14px;
-        }
-        .btn-nav {
-            background: #2563eb;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-        .btn-nav:hover {
-            background: #1d4ed8;
-        }
-        .card {
-            background-color: #0f172a;
-            border: 1px solid #1e293b;
-            border-radius: 8px;
-            padding: 30px;
-        }
-        .registry-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        .btn-copy {
-            background-color: #16a34a;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn-copy:hover {
-            background-color: #15803d;
-        }
-        .btn-clear {
-            background: transparent;
-            color: #ef4444;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        .btn-clear:hover {
-            text-decoration: underline;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            text-align: left;
-            padding: 14px 0;
-            border-bottom: 1px solid #1e293b;
-            font-size: 15px;
-        }
-        th {
-            color: #64748b;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-        }
-        .empty-message {
-            color: #64748b;
-            padding: 40px 0;
-            text-align: center;
-            font-size: 14px;
-        }
-        .feedback {
-            color: #16a34a;
-            margin-left: 12px;
-            font-weight: 600;
-            font-size: 14px;
-            display: none;
-        }
+        body { background-color: #0b132b; color: #ffffff; font-family: -apple-system, sans-serif; margin: 0; padding: 40px 30px; }
+        .container { max-width: 1050px; margin: 0 auto; }
+        .header-section { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #1c2541; padding-bottom: 20px; margin-bottom: 35px; }
+        h1 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
+        .subtitle { color: #64748b; margin: 6px 0 0 0; font-size: 14px; }
+        .btn-nav { background: #2563eb; color: #ffffff; border: none; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; }
+        .btn-nav:hover { background: #1d4ed8; }
+        .card { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 30px; margin-bottom: 25px; }
+        .otp-panel { display: flex; align-items: center; justify-content: space-between; background: #131f42; border: 1px solid #2563eb; }
+        .otp-code { font-size: 32px; font-weight: 800; color: #38bdf8; letter-spacing: 2px; background: #0b132b; padding: 4px 16px; border-radius: 6px; border: 1px solid #1e293b; }
+        .registry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .btn-copy { background-color: #16a34a; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .btn-submit { background-color: #2563eb; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .btn-danger { background-color: #dc2626; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; }
+        .btn-clear { background: transparent; color: #ef4444; border: none; cursor: pointer; font-weight: 600; font-size: 14px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 14px 0; border-bottom: 1px solid #1e293b; font-size: 15px; }
+        th { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+        .empty-message { color: #64748b; padding: 40px 0; text-align: center; }
+        .feedback { color: #16a34a; margin-left: 12px; font-weight: 600; font-size: 14px; display: none; }
     </style>
 </head>
 <body>
@@ -127,6 +37,33 @@
             <div style="display: flex; align-items: center; gap: 15px;">
                 <a href="/lecturer/roster" class="btn-nav">⚙️ Class Registry Setup</a>
                 <a href="/lecturer/logout" style="color: #ef4444; text-decoration: none; font-size: 14px; font-weight: 600;">Logout 🚪</a>
+            </div>
+        </div>
+
+        <div class="card otp-panel">
+            <div>
+                <h3 style="margin: 0 0 5px 0; font-size: 18px;">Anti-Cheating Token Security</h3>
+                <p style="margin: 0; color: #8fa0c4; font-size: 13px;">
+                    {% if current_otp %}
+                    Share this active code with students in the hall. Submissions are open.
+                    {% else %}
+                    Attendance submissions are closed. Generate a new token to open.
+                    {% endif %}
+                </p>
+            </div>
+            <div>
+                {% if current_otp %}
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <span class="otp-code">{{ current_otp }}</span>
+                    <form method="POST" action="/lecturer/lock-session">
+                        <button type="submit" class="btn-danger">🔒 Lock System Now</button>
+                    </form>
+                </div>
+                {% else %}
+                <form method="POST" action="/lecturer/generate-otp">
+                    <button type="submit" class="btn-submit">⚡ Generate Access Code</button>
+                </form>
+                {% endif %}
             </div>
         </div>
 
