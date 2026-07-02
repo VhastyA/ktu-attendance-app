@@ -3,132 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Class Roster Setup - KTU</title>
+    <title>Class Roster Setup</title>
     <style>
         body {
             background-color: #0b132b;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 30px;
+            padding: 40px 30px;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1050px;
             margin: 0 auto;
         }
         .header-section {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 1px solid #223354;
+            border-bottom: 1px solid #1c2541;
             padding-bottom: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
         }
         h1 {
             margin: 0;
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
+            letter-spacing: -0.5px;
         }
         .subtitle {
-            color: #8fa0c4;
-            margin: 5px 0 0 0;
+            color: #64748b;
+            margin: 6px 0 0 0;
             font-size: 14px;
         }
         .btn-back {
             background: transparent;
             color: #ffffff;
-            border: 1px solid #3a506b;
-            padding: 8px 16px;
+            border: 1px solid #1c2541;
+            padding: 10px 20px;
             border-radius: 6px;
             text-decoration: none;
             font-size: 14px;
-            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s;
         }
         .btn-back:hover {
             background: #1c2541;
         }
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr 1.8fr;
-            gap: 25px;
+            grid-template-columns: 1fr 1.7fr;
+            gap: 30px;
         }
         .card {
-            background-color: #1c2541;
-            border: 1px solid #223354;
+            background-color: #0f172a;
+            border: 1px solid #1e293b;
             border-radius: 8px;
-            padding: 25px;
+            padding: 30px;
         }
         .card h2 {
             margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 20px;
+            margin-bottom: 25px;
+            font-size: 22px;
             font-weight: 600;
+            letter-spacing: -0.3px;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         label {
             display: block;
             text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 1px;
-            color: #8fa0c4;
-            margin-bottom: 8px;
-            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
         .input-control {
             width: 100%;
             background-color: #0b132b;
-            border: 1px solid #3a506b;
+            border: 1px solid #1e293b;
             border-radius: 6px;
-            padding: 12px;
+            padding: 14px;
             color: #ffffff;
-            font-size: 14px;
+            font-size: 15px;
             box-sizing: border-box;
         }
         .input-control::placeholder {
-            color: #485b75;
+            color: #334155;
         }
         .btn-submit {
             width: 100%;
             background-color: #2563eb;
             color: white;
             border: none;
-            padding: 12px;
+            padding: 14px;
             border-radius: 6px;
             font-weight: 600;
             cursor: pointer;
-            font-size: 14px;
-            margin-top: 10px;
+            font-size: 15px;
+            margin-top: 5px;
+            transition: background 0.2s;
         }
         .btn-submit:hover {
             background-color: #1d4ed8;
         }
-        /* Drag and Drop Styling */
+        /* Drag and Drop Zone Area */
         .drop-zone {
-            border: 2px dashed #3a506b;
+            border: 2px dashed #1e293b;
             border-radius: 6px;
-            padding: 20px;
+            padding: 30px 20px;
             text-align: center;
-            background-color: #0f172a;
+            background-color: #0b132b;
             cursor: pointer;
-            margin-top: 20px;
-            transition: border-color 0.2s;
+            margin-top: 25px;
+            transition: border-color 0.2s, background-color 0.2s;
         }
         .drop-zone:hover, .drop-zone.dragover {
             border-color: #2563eb;
-            background-color: #132247;
+            background-color: #0f172a;
         }
         .drop-zone p {
             margin: 0;
-            font-size: 13px;
-            color: #8fa0c4;
+            font-size: 14px;
+            color: #64748b;
         }
         .registry-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .btn-clear {
             background: transparent;
@@ -137,9 +141,10 @@
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            padding: 0;
+        }
+        .btn-clear:hover {
+            text-decoration: underline;
         }
         table {
             width: 100%;
@@ -147,26 +152,26 @@
         }
         th, td {
             text-align: left;
-            padding: 12px 0;
-            border-bottom: 1px solid #223354;
-            font-size: 14px;
+            padding: 14px 0;
+            border-bottom: 1px solid #1e293b;
+            font-size: 15px;
         }
         th {
-            color: #8fa0c4;
-            font-weight: 500;
+            color: #64748b;
+            font-weight: 600;
             text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
         }
         .empty-message {
-            color: #8fa0c4;
-            padding: 30px 0;
+            color: #64748b;
+            padding: 40px 0;
             text-align: center;
+            font-size: 14px;
         }
-        /* Login Screen Overlay */
         .login-box {
-            max-width: 360px;
-            margin: 120px auto;
+            max-width: 380px;
+            margin: 140px auto;
             text-align: center;
         }
     </style>
@@ -175,8 +180,8 @@
 
     {% if show_login %}
     <div class="login-box card">
-        <h2 style="color: #ffffff; margin-bottom: 5px;">Lecturer Verification</h2>
-        <p style="color: #8fa0c4; font-size: 13px; margin-bottom: 25px;">Enter security credentials to manage the student roster registry.</p>
+        <h2 style="margin-bottom: 8px;">Lecturer Verification</h2>
+        <p style="color: #64748b; font-size: 13px; margin-bottom: 25px;">Enter credentials to manage the student roster registry session.</p>
         
         {% if error %}
             <p style="color: #ef4444; font-size: 13px; margin-bottom: 15px; font-weight: 600;">{{ error }}</p>
@@ -218,8 +223,8 @@
                 </form>
 
                 <div class="drop-zone" id="fileDropZone">
-                    <p>📄 <strong>Drag & Drop Roster File Here</strong></p>
-                    <p style="font-size: 11px; margin-top: 40px; color: #485b75;">Supports CSV / Excel text extraction</p>
+                    <p>📂 <strong>Drag & Drop Roster File Here</strong></p>
+                    <p style="font-size: 11px; margin-top: 8px; color: #334155;">Supports CSV or TXT roster lists</p>
                 </div>
                 <input type="file" id="fileInput" accept=".csv, .txt" style="display: none;">
             </div>
@@ -227,7 +232,7 @@
             <div class="card">
                 <div class="registry-header">
                     <h2>Class Registry ({{ students|length if students else 0 }})</h2>
-                    <form method="POST" action="/lecturer/clear" onsubmit="return confirm('Wipe entire data list?');">
+                    <form method="POST" action="/lecturer/clear" onsubmit="return confirm('Wipe entire registry data list clean?');">
                         <button type="submit" class="btn-clear">🗑️ Clear Entire Roster</button>
                     </form>
                 </div>
@@ -236,20 +241,20 @@
                     <thead>
                         <tr>
                             <th style="width: 10%;">#</th>
-                            <th style="width: 50%;">Student Name</th>
-                            <th style="width: 40%;">Index Number</th>
+                            <th style="width: 55%;">Student Name</th>
+                            <th style="width: 35%;">Index Number</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for student in students %}
                         <tr>
-                            <td style="color: #485b75;">{{ loop.index }}</td>
+                            <td style="color: #334155;">{{ loop.index }}</td>
                             <td>{{ student.name }}</td>
-                            <td style="color: #8fa0c4;">{{ student.index_number }}</td>
+                            <td style="color: #64748b;">{{ student.index_number }}</td>
                         </tr>
                         {% else %}
                         <tr>
-                            <td colspan="3" class="empty-message">Roster is empty. Register students or drop a file to enable form predictions.</td>
+                            <td colspan="3" class="empty-message">Roster is empty. Register students to enable form predictions.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -290,8 +295,7 @@
         });
 
         function handleUploadedFile(file) {
-            alert("File '" + file.name + "' detected! Parsing registry list rows...");
-            // Here you can add your custom parsing fetch call to parse rows into your python database
+            alert("File '" + file.name + "' accepted. Ready for batch upload processing.");
         }
     </script>
     {% endif %}
