@@ -5,212 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Class Roster Setup</title>
     <style>
-        body {
-            background-color: #0b132b;
-            color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 40px 30px;
-        }
-        .container {
-            max-width: 1050px;
-            margin: 0 auto;
-        }
-        .header-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            border-bottom: 1px solid #1c2541;
-            padding-bottom: 20px;
-            margin-bottom: 35px;
-        }
-        h1 {
-            margin: 0;
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-        }
-        .subtitle {
-            color: #64748b;
-            margin: 6px 0 0 0;
-            font-size: 14px;
-        }
-        .btn-back {
-            background: transparent;
-            color: #ffffff;
-            border: 1px solid #1c2541;
-            padding: 10px 20px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            transition: background 0.2s;
-        }
-        .btn-back:hover {
-            background: #1c2541;
-        }
-        .main-layout {
-            display: grid;
-            grid-template-columns: 1fr 1.7fr;
-            gap: 30px;
-        }
-        .card {
-            background-color: #0f172a;
-            border: 1px solid #1e293b;
-            border-radius: 8px;
-            padding: 30px;
-        }
-        .card h2 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            font-size: 22px;
-            font-weight: 600;
-            letter-spacing: -0.3px;
-        }
-        .form-group {
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-            color: #64748b;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        .input-control {
-            width: 100%;
-            background-color: #0b132b;
-            border: 1px solid #1e293b;
-            border-radius: 6px;
-            padding: 14px;
-            color: #ffffff;
-            font-size: 15px;
-            box-sizing: border-box;
-        }
-        .input-control::placeholder {
-            color: #334155;
-        }
-        .btn-submit {
-            width: 100%;
-            background-color: #2563eb;
-            color: white;
-            border: none;
-            padding: 14px;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 15px;
-            margin-top: 5px;
-            transition: background 0.2s;
-        }
-        .btn-submit:hover {
-            background-color: #1d4ed8;
-        }
-        /* Drag and Drop Zone Area */
-        .drop-zone {
-            border: 2px dashed #1e293b;
-            border-radius: 6px;
-            padding: 30px 20px;
-            text-align: center;
-            background-color: #0b132b;
-            cursor: pointer;
-            margin-top: 25px;
-            transition: border-color 0.2s, background-color 0.2s;
-        }
-        .drop-zone:hover, .drop-zone.dragover {
-            border-color: #2563eb;
-            background-color: #0f172a;
-        }
-        .drop-zone p {
-            margin: 0;
-            font-size: 14px;
-            color: #64748b;
-        }
-        .registry-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-        .btn-clear {
-            background: transparent;
-            color: #ef4444;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            padding: 0;
-        }
-        .btn-clear:hover {
-            text-decoration: underline;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            text-align: left;
-            padding: 14px 0;
-            border-bottom: 1px solid #1e293b;
-            font-size: 15px;
-        }
-        th {
-            color: #64748b;
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-        }
-        .empty-message {
-            color: #64748b;
-            padding: 40px 0;
-            text-align: center;
-            font-size: 14px;
-        }
-        .login-box {
-            max-width: 380px;
-            margin: 140px auto;
-            text-align: center;
-        }
+        body { background-color: #0b132b; color: #ffffff; font-family: -apple-system, sans-serif; margin: 0; padding: 40px 30px; }
+        .container { max-width: 1050px; margin: 0 auto; }
+        .header-section { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #1c2541; padding-bottom: 20px; margin-bottom: 35px; }
+        h1 { margin: 0; font-size: 32px; font-weight: 700; letter-spacing: -0.5px; }
+        .subtitle { color: #64748b; margin: 6px 0 0 0; font-size: 14px; }
+        .btn-back { background: transparent; color: #ffffff; border: 1px solid #1c2541; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 500; }
+        .btn-back:hover { background: #1c2541; }
+        .main-layout { display: grid; grid-template-columns: 1fr 1.7fr; gap: 30px; }
+        .card { background-color: #0f172a; border: 1px solid #1e293b; border-radius: 8px; padding: 30px; }
+        .card h2 { margin-top: 0; margin-bottom: 25px; font-size: 22px; font-weight: 600; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; text-transform: uppercase; font-size: 11px; color: #64748b; margin-bottom: 10px; font-weight: 700; }
+        .input-control { width: 100%; background-color: #0b132b; border: 1px solid #1e293b; border-radius: 6px; padding: 14px; color: #ffffff; font-size: 15px; box-sizing: border-box; }
+        .btn-submit { width: 100%; background-color: #2563eb; color: white; border: none; padding: 14px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 15px; }
+        .btn-submit:hover { background-color: #1d4ed8; }
+        .drop-zone { border: 2px dashed #1e293b; border-radius: 6px; padding: 30px 20px; text-align: center; background-color: #0b132b; cursor: pointer; margin-top: 25px; }
+        .drop-zone:hover, .drop-zone.dragover { border-color: #2563eb; background-color: #0f172a; }
+        .drop-zone p { margin: 0; font-size: 14px; color: #64748b; }
+        .registry-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .btn-clear { background: transparent; color: #ef4444; border: none; cursor: pointer; font-weight: 600; font-size: 14px; padding: 0; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 14px 0; border-bottom: 1px solid #1e293b; font-size: 15px; }
+        th { color: #64748b; font-weight: 600; text-transform: uppercase; font-size: 11px; }
+        .empty-message { color: #64748b; padding: 40px 0; text-align: center; }
     </style>
 </head>
 <body>
-
-    {% if show_login %}
-    <div class="login-box card">
-        <h2 style="margin-bottom: 8px;">Lecturer Verification</h2>
-        <p style="color: #64748b; font-size: 13px; margin-bottom: 25px;">Enter credentials to manage the student roster registry session.</p>
-        
-        {% if error %}
-            <p style="color: #ef4444; font-size: 13px; margin-bottom: 15px; font-weight: 600;">{{ error }}</p>
-        {% endif %}
-
-        <form method="POST" action="/lecturer/dashboard">
-            <div class="form-group">
-                <input type="password" name="password" placeholder="Enter Access Password" required class="input-control" style="text-align: center;">
-            </div>
-            <button type="submit" class="btn-submit">Verify Identity</button>
-        </form>
-    </div>
-
-    {% else %}
     <div class="container">
-        
         <div class="header-section">
             <div>
                 <h1>Class Roster Setup</h1>
                 <p class="subtitle">Pre-populate class registry lists</p>
             </div>
-            <a href="/" class="btn-back">← Back to Dashboard</a>
+            <a href="/lecturer/dashboard" class="btn-back">← Back to Dashboard</a>
         </div>
 
         <div class="main-layout">
-            
             <div class="card">
                 <h2>Add Student</h2>
-                <form method="POST" action="/submit">
+                <form method="POST" action="/submit-master">
                     <div class="form-group">
                         <label>Full Name</label>
                         <input type="text" name="name" placeholder="e.g. Ama Serwaa" required class="input-control">
@@ -224,7 +58,7 @@
 
                 <div class="drop-zone" id="fileDropZone">
                     <p>📂 <strong>Drag & Drop Roster File Here</strong></p>
-                    <p style="font-size: 11px; margin-top: 8px; color: #334155;">Supports CSV or TXT roster lists</p>
+                    <p style="font-size: 11px; margin-top: 8px; color: #334155;">Upload CSV or TXT list</p>
                 </div>
                 <input type="file" id="fileInput" accept=".csv, .txt" style="display: none;">
             </div>
@@ -232,137 +66,64 @@
             <div class="card">
                 <div class="registry-header">
                     <h2>Class Registry ({{ students|length if students else 0 }})</h2>
-                    <form method="POST" action="/lecturer/clear" onsubmit="return confirm('Wipe entire registry data list clean?');">
+                    <form method="POST" action="/lecturer/clear-roster" onsubmit="return confirm('Wipe master list?');">
                         <button type="submit" class="btn-clear">🗑️ Clear Entire Roster</button>
                     </form>
                 </div>
 
                 <table>
                     <thead>
-                        <tr>
-                            <th style="width: 10%;">#</th>
-                            <th style="width: 55%;">Student Name</th>
-                            <th style="width: 35%;">Index Number</th>
-                        </tr>
+                        <tr><th style="width: 10%;">#</th><th style="width: 55%;">Student Name</th><th style="width: 35%;">Index Number</th></tr>
                     </thead>
                     <tbody>
                         {% for student in students %}
-                        <tr>
-                            <td style="color: #334155;">{{ loop.index }}</td>
-                            <td>{{ student.name }}</td>
-                            <td style="color: #64748b;">{{ student.index_number }}</td>
-                        </tr>
+                        <tr><td style="color: #334155;">{{ loop.index }}</td><td>{{ student.name }}</td><td style="color: #64748b;">{{ student.index_number }}</td></tr>
                         {% else %}
-                        <tr>
-                            <td colspan="3" class="empty-message">Roster is empty. Register students to enable form predictions.</td>
-                        </tr>
+                        <tr><td colspan="3" class="empty-message">Roster is empty. Register students or drop a file to populate.</td></tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
 
     <script>
-    const dropZone = document.getElementById('fileDropZone');
-    const fileInput = document.getElementById('fileInput');
+        const dropZone = document.getElementById('fileDropZone');
+        const fileInput = document.getElementById('fileInput');
 
-    // Click to choose file fallback
-    dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) parseAndSubmitRoster(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) parseAndSubmitRoster(e.target.files[0]);
+        });
 
-    // Highlight dropzone on dragover
-    dropZone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropZone.classList.add('dragover');
-    });
-
-    dropZone.addEventListener('dragleave', () => {
-        dropZone.classList.remove('dragover');
-    });
-
-    // Handle dropped file
-    dropZone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropZone.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            parseAndSubmitRoster(files[0]);
+        function parseAndSubmitRoster(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const lines = e.target.result.split(/\r?\n/);
+                let promises = [];
+                lines.forEach((line) => {
+                    if (!line.trim()) return;
+                    let parts = line.includes(',') ? line.split(',') : line.split('\t');
+                    let name = parts[0]?.trim();
+                    let indexNum = parts[1]?.trim();
+                    if (name && indexNum && name !== "Student Name") {
+                        let formData = new FormData();
+                        formData.append('name', name);
+                        formData.append('index_number', indexNum);
+                        promises.push(fetch('/submit-master', { method: 'POST', body: formData }));
+                    }
+                });
+                Promise.all(promises).then(() => { window.location.reload(); });
+            };
+            reader.readAsText(file);
         }
-    });
-
-    // Handle file chosen via file browser
-    fileInput.addEventListener('change', (e) => {
-        if (e.target.files.length > 0) {
-            parseAndSubmitRoster(e.target.files[0]);
-        }
-    });
-
-    // 📄 Parse File Content and Send Rows to Database
-    function parseAndSubmitRoster(file) {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            const text = e.target.result;
-            // Split file by line breaks to read row by row
-            const lines = text.split(/\r?\n/);
-            let totalAdded = 0;
-            let promises = [];
-
-            lines.forEach((line) => {
-                if (!line.trim()) return; // Skip empty lines
-
-                let name = "";
-                let indexNum = "";
-
-                // Check if file uses Comma (CSV) or Tab (Excel copy) separating values
-                if (line.includes(',')) {
-                    const parts = line.split(',');
-                    name = parts[0].trim();
-                    indexNum = parts[1] ? parts[1].trim() : "";
-                } else if (line.includes('\t')) {
-                    const parts = line.split('\t');
-                    name = parts[0].trim();
-                    indexNum = parts[1] ? parts[1].trim() : "";
-                }
-
-                // If a valid name and index number row exists, send it to Flask
-                if (name && indexNum && name !== "Student Name") {
-                    totalAdded++;
-                    
-                    // Create an asynchronous form data payload
-                    let formData = new FormData();
-                    formData.append('name', name);
-                    formData.append('index_number', indexNum);
-
-                    // Send the data matching your existing '/submit' route rules
-                    let requestPromise = fetch('/submit', {
-                        method: 'POST',
-                        body: formData
-                    });
-                    promises.push(requestPromise);
-                }
-            });
-
-            if (totalAdded === 0) {
-                alert("Could not extract data. Ensure your file has 'Name,IndexNumber' columns.");
-                return;
-            }
-
-            // Wait until all rows are finished uploading, then refresh the dashboard UI view
-            Promise.all(promises).then(() => {
-                alert(`Successfully processed and uploaded ${totalAdded} students into the registry database!`);
-                window.location.reload(); // Reloads page to display the new student rows automatically
-            }).catch(err => {
-                alert("Error synchronizing file payload with the roster server backend.");
-                console.error(err);
-            });
-        };
-
-        reader.readAsText(file);
-    }
-</script>
-    {% endif %}
-
+    </script>
 </body>
 </html>
