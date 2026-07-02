@@ -3,64 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lecturer Dashboard</title>
+    <title>Lecturer Dashboard Portal</title>
 </head>
-<body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f7f6;">
+<body style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f7f6; color: #333;">
 
     {% if show_login %}
     <div style="max-width: 400px; margin: 100px auto; padding: 30px; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center;">
-        <h2>Lecturer Portal Login</h2>
-        <p style="color: #666;">Enter your security key to view the attendance roster.</p>
+        <h2 style="color: #007bff; margin-bottom: 10px;">Lecturer Portal</h2>
+        <p style="color: #666; font-size: 14px; margin-bottom: 20px;">Please enter the security key to unlock the session attendance roster.</p>
         
         {% if error %}
-            <p style="color: red; font-weight: bold;">{{ error }}</p>
+            <p style="color: #dc3545; font-weight: bold; background: #f8d7da; padding: 8px; border-radius: 4px;">{{ error }}</p>
         {% endif %}
 
         <form method="POST" action="/lecturer/dashboard">
             <input type="password" name="password" placeholder="Enter Password" required 
-                   style="width: 85%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+                   style="width: 85%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px; text-align: center;">
             <br>
-            <button type="submit" style="width: 90%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px;">
-                Unlock Dashboard
+            <button type="submit" style="width: 92%; padding: 12px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px;">
+                Unlock Roster
             </button>
         </form>
     </div>
 
     {% else %}
     <div style="max-width: 900px; margin: 0 auto;">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <h1>KTU Attendance Roster</h1>
-            <a href="/lecturer/logout" style="color: red; text-decoration: none; font-weight: bold;">Logout 🚪</a>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #007bff; padding-bottom: 10px; margin-bottom: 20px;">
+            <h1 style="margin: 0; color: #007bff;">KTU Attendance Roster</h1>
+            <a href="/lecturer/logout" style="color: #dc3545; text-decoration: none; font-weight: bold; padding: 8px 12px; border: 1px solid #dc3545; border-radius: 4px; background: white;">Logout 🚪</a>
         </div>
 
-        <div style="margin: 20px 0;">
-            <button id="copyBtn" onclick="copyRosterToClipboard()" style="padding: 12px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+        <div style="margin-bottom: 20px;">
+            <button id="copyBtn" onclick="copyRosterToClipboard()" style="padding: 12px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 15px; display: inline-flex; align-items: center; gap: 8px;">
                 📋 Copy Names for Class Registry
             </button>
-            <span id="copyFeedback" style="margin-left: 10px; color: #28a745; font-weight: bold; display: none;">Copied to clipboard!</span>
+            <span id="copyFeedback" style="margin-left: 12px; color: #28a745; font-weight: bold; display: none; background: #d4edda; padding: 6px 12px; border-radius: 4px;">Copied to clipboard!</span>
         </div>
+
+        <table border="1" style="width: 100%; border-collapse: collapse; text-align: left; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <tr style="background-color: #007bff; color: white;">
+                <th style="padding: 12px;">Student Name</th>
+                <th style="padding: 12px;">Index Number</th>
+            </tr>
+            {% for student in students %}
+            <tr>
+                <td style="padding: 10px;">{{ student.name }}</td>
+                <td style="padding: 10px;">{{ student.index_number }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2" style="padding: 20px; text-align: center; color: #888;">No students signed in yet for this session.</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <form method="POST" action="/lecturer/clear" onsubmit="return confirm('Are you sure you want to wipe the session list clean for the next class?');" style="margin-top: 30px; text-align: right;">
+            <button type="submit" style="padding: 10px 15px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+                ⚠️ Clear Current Session Roster
+            </button>
+        </form>
+
     </div>
 
     <script>
     function copyRosterToClipboard() {
         const rows = document.querySelectorAll("table tr");
         let textToCopy = "";
+
         rows.forEach((row, index) => {
-            if (index === 0) return; 
+            if (index === 0) return; // Skip table header columns
+            
             const columns = row.querySelectorAll("td");
             if (columns.length >= 2) {
                 const name = columns[0].innerText.trim();
                 const indexNum = columns[1].innerText.trim();
+                
+                // Formats it cleanly as columns so it splits perfectly when pasted into Excel/Word tables
                 textToCopy += name + "\t" + indexNum + "\n";
             }
         });
+
+        // If the table is empty, don't copy anything blank
+        if (textToCopy === "" || textToCopy.includes("No students signed in yet")) {
+            alert("Roster is currently empty. Nothing to copy!");
+            return;
+        }
+
         navigator.clipboard.writeText(textToCopy).then(() => {
             const feedback = document.getElementById("copyFeedback");
             feedback.style.display = "inline";
             setTimeout(() => { feedback.style.display = "none"; }, 3000);
+        }).catch(err => {
+            alert("Browser clipboard blocked automatic copy. Please highlight and copy manually.");
         });
     }
     </script>
+
     {% endif %}
 
 </body>
